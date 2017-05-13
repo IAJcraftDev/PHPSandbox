@@ -5,7 +5,7 @@
     namespace PHPSandbox;
     
     use PhpParser\Node,
-        \PhpParser\NodeVisitorAbstract;
+        PhpParser\NodeVisitorAbstract;
 
     /**
      * Validator class for PHP Sandboxes.
@@ -127,7 +127,7 @@
                 if(!$node->name){
                     $this->sandbox->validationError("Sandboxed code attempted to define unnamed class!", Error::DEFINE_CLASS_ERROR, $node, '');
                 }
-                if(!$this->sandbox->checkClass($node->name)){
+                if(!$this->sandbox->checkClass(($node->class instanceof Node\Name\FullyQualified ? '\\' : '') . $node->name)){
                     $this->sandbox->validationError("Class failed custom validation!", Error::VALID_CLASS_ERROR, $node, $node->name);
                 }
                 if($node->extends instanceof Node\Name){
@@ -137,7 +137,7 @@
                     if(!$node->extends->toString()){
                         $this->sandbox->validationError("Sandboxed code attempted to extend unnamed class!", Error::DEFINE_CLASS_ERROR, $node, '');
                     }
-                    if(!$this->sandbox->checkClass($node->extends->toString(), true)){
+                    if(!$this->sandbox->checkClass(($class instanceof Node\Name\FullyQualified ? '\\' : '') . $node->extends->toString(), true)){
                         $this->sandbox->validationError("Class extension failed custom validation!", Error::VALID_CLASS_ERROR, $node, $node->extends->toString());
                     }
                 }
@@ -278,7 +278,7 @@
                 /**
                  * @var Node\Name    $class
                  */
-                if(!$this->sandbox->checkClass($class->toString())){
+                if(!$this->sandbox->checkClass(($class instanceof Node\Name\FullyQualified ? '\\' : '') . $class->toString())){
                     $this->sandbox->validationError("Class constant failed custom validation!", Error::VALID_CLASS_ERROR, $node, $class->toString());
                 }
                 return $node;
@@ -302,7 +302,7 @@
                 if($this->sandbox->isDefinedClass($class)){
                     $node->class = new Node\Name($this->sandbox->getDefinedClass($class));
                 }
-                $this->sandbox->checkType($class);
+                $this->sandbox->checkType( ($node->class instanceof Node\Name\FullyQualified ? '\\' : '') . $class);
                 return $node;
             } else if($node instanceof Node\Expr\ErrorSuppress){
                 if(!$this->sandbox->allow_error_suppressing){

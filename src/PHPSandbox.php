@@ -6240,6 +6240,20 @@
                 return call_user_func_array($this->validation['class'], [$name, $this]);
             }
             if(!isset($this->definitions['classes'][$name])){
+                if (strpos($name, '\\') === 0) {
+                    $name = substr($name, 1);
+                    $original_name = substr($original_name, 1);
+                } else {
+                    foreach ($this->definitions['aliases'] as $aliasArr) {
+                        $alias = strtolower($aliasArr['alias']);
+                        $original = strtolower($aliasArr['original']);
+
+                        if (strpos($name, $alias) === 0) {
+                            $name = $original.substr($name, strlen($alias));
+                            $original_name = $aliasArr['original'].substr($original_name, strlen($alias));
+                        }
+                    }
+                }
                 if(count($this->whitelist['classes'])){
                     if(!isset($this->whitelist['classes'][$name])){
                         $this->validationError("Sandboxed code attempted to $action non-whitelisted class: $original_name", Error::WHITELIST_CLASS_ERROR, null, $original_name);
@@ -6450,6 +6464,20 @@
                 return call_user_func_array($this->validation['type'], [$name, $this]);
             }
             if(!isset($this->definitions['classes'][$name])){
+                if (strpos($name, '\\') === 0) {
+                    $name = substr($name, 1);
+                    $original_name = substr($original_name, 1);
+                } else {
+                    foreach ($this->definitions['aliases'] as $aliasArr) {
+                        $alias = strtolower($aliasArr['alias']);
+                        $original = strtolower($aliasArr['original']);
+
+                        if (strpos($name, $alias) === 0) {
+                            $name = $original.substr($name, strlen($alias));
+                            $original_name = $aliasArr['original'].substr($original_name, strlen($alias));
+                        }
+                    }
+                }
                 if(count($this->whitelist['types'])){
                     if(!isset($this->whitelist['types'][$name])){
                         $this->validationError("Sandboxed code attempted to call non-whitelisted type: $original_name", Error::WHITELIST_TYPE_ERROR, null, $original_name);
