@@ -3832,7 +3832,21 @@
                 }
                 return $name;
             }
-            return strtolower($name);
+            
+            $name = strtolower($name);
+            if (strpos($name, '\\') === 0) {
+                $name = substr($name, 1);
+            } else {
+                foreach ($this->definitions['aliases'] as $aliasArr) {
+                    $alias = strtolower($aliasArr['alias']);
+                    $original = strtolower($aliasArr['original']);
+
+                    if (strpos($name, $alias) === 0) {
+                            $name = $original.substr($name, strlen($alias));
+                    }
+                }
+            }
+            return $name;
         }
 
         /** Normalize interface name.  This is an internal PHPSandbox function.
@@ -3848,7 +3862,20 @@
                 }
                 return $name;
             }
-            return strtolower($name);
+            $name = strtolower($name);
+            if (strpos($name, '\\') === 0) {
+                 $name = substr($name, 1);
+            } else {
+                foreach ($this->definitions['aliases'] as $aliasArr) {
+                    $alias = strtolower($aliasArr['alias']);
+                    $original = strtolower($aliasArr['original']);
+
+                    if (strpos($name, $alias) === 0) {
+                        $name = $original.substr($name, strlen($alias));
+                    }
+                }
+            }
+            return $name;
         }
 
         /** Normalize trait name.  This is an internal PHPSandbox function.
@@ -3864,7 +3891,20 @@
                 }
                 return $name;
             }
-            return strtolower($name);
+            $name = strtolower($name);
+            if (strpos($name, '\\') === 0) {
+                 $name = substr($name, 1);
+            } else {
+                foreach ($this->definitions['aliases'] as $aliasArr) {
+                    $alias = strtolower($aliasArr['alias']);
+                    $original = strtolower($aliasArr['original']);
+
+                    if (strpos($name, $alias) === 0) {
+                        $name = $original.substr($name, strlen($alias));
+                    }
+                }
+            }
+            return $name;
         }
 
         /** Normalize keyword name.  This is an internal PHPSandbox function.
@@ -3973,7 +4013,20 @@
                 }
                 return $name;
             }
-            return strtolower($name);
+            $name = strtolower($name);
+            if (strpos($name, '\\') === 0) {
+                 $name = substr($name, 1);
+            } else {
+                foreach ($this->definitions['aliases'] as $aliasArr) {
+                    $alias = strtolower($aliasArr['alias']);
+                    $original = strtolower($aliasArr['original']);
+
+                    if (strpos($name, $alias) === 0) {
+                        $name = $original.substr($name, strlen($alias));
+                    }
+                }
+            }
+            return $name;
         }
 
         /** Whitelist PHPSandbox definitions, such as functions, constants, classes, etc. to set
@@ -4527,6 +4580,9 @@
          */
         public function isBlacklistedClass($name){
             $name = $this->normalizeClass($name);
+
+
+
             return isset($this->blacklist['classes'][$name]);
         }
 
@@ -6240,30 +6296,16 @@
                 return call_user_func_array($this->validation['class'], [$name, $this]);
             }
             if(!isset($this->definitions['classes'][$name])){
-                if (strpos($name, '\\') === 0) {
-                    $name = substr($name, 1);
-                    $original_name = substr($original_name, 1);
-                } else {
-                    foreach ($this->definitions['aliases'] as $aliasArr) {
-                        $alias = strtolower($aliasArr['alias']);
-                        $original = strtolower($aliasArr['original']);
-
-                        if (strpos($name, $alias) === 0) {
-                            $name = $original.substr($name, strlen($alias));
-                            $original_name = $aliasArr['original'].substr($original_name, strlen($alias));
-                        }
-                    }
-                }
                 if(count($this->whitelist['classes'])){
                     if(!isset($this->whitelist['classes'][$name])){
-                        $this->validationError("Sandboxed code attempted to $action non-whitelisted class: $original_name", Error::WHITELIST_CLASS_ERROR, null, $original_name);
+                        $this->validationError("Sandboxed code attempted to $action non-whitelisted class: $original_name ($name)", Error::WHITELIST_CLASS_ERROR, null, $original_name);
                     }
                 } else if(count($this->blacklist['classes'])){
                     if(isset($this->blacklist['classes'][$name])){
-                        $this->validationError("Sandboxed code attempted to $action blacklisted class: $original_name", Error::BLACKLIST_CLASS_ERROR, null, $original_name);
+                        $this->validationError("Sandboxed code attempted to $action blacklisted class: $original_name ($name)", Error::BLACKLIST_CLASS_ERROR, null, $original_name);
                     }
                 } else {
-                    $this->validationError("Sandboxed code attempted to $action invalid class: $original_name", Error::VALID_CLASS_ERROR, null, $original_name);
+                    $this->validationError("Sandboxed code attempted to $action invalid class: $original_name ($name)", Error::VALID_CLASS_ERROR, null, $original_name);
                 }
             }
             return true;
@@ -6293,14 +6335,14 @@
             if(!isset($this->definitions['interfaces'][$name])){
                 if(count($this->whitelist['interfaces'])){
                     if(!isset($this->whitelist['interfaces'][$name])){
-                        $this->validationError("Sandboxed code attempted to call non-whitelisted interface: $original_name", Error::WHITELIST_INTERFACE_ERROR, null, $original_name);
+                        $this->validationError("Sandboxed code attempted to call non-whitelisted interface: $original_name ($name)", Error::WHITELIST_INTERFACE_ERROR, null, $original_name);
                     }
                 } else if(count($this->blacklist['interfaces'])){
                     if(isset($this->blacklist['interfaces'][$name])){
-                        $this->validationError("Sandboxed code attempted to call blacklisted interface: $original_name", Error::BLACKLIST_INTERFACE_ERROR, null, $original_name);
+                        $this->validationError("Sandboxed code attempted to call blacklisted interface: $original_name ($name)", Error::BLACKLIST_INTERFACE_ERROR, null, $original_name);
                     }
                 } else {
-                    $this->validationError("Sandboxed code attempted to call invalidnterface: $original_name", Error::VALID_INTERFACE_ERROR, null, $original_name);
+                    $this->validationError("Sandboxed code attempted to call invalidnterface: $original_name ($name)", Error::VALID_INTERFACE_ERROR, null, $original_name);
                 }
             }
             return true;
@@ -6330,14 +6372,14 @@
             if(!isset($this->definitions['traits'][$name])){
                 if(count($this->whitelist['traits'])){
                     if(!isset($this->whitelist['traits'][$name])){
-                        $this->validationError("Sandboxed code attempted to call non-whitelisted trait: $original_name", Error::WHITELIST_TRAIT_ERROR, null, $original_name);
+                        $this->validationError("Sandboxed code attempted to call non-whitelisted trait: $original_name ($name)", Error::WHITELIST_TRAIT_ERROR, null, $original_name);
                     }
                 } else if(count($this->blacklist['traits'])){
                     if(isset($this->blacklist['traits'][$name])){
-                        $this->validationError("Sandboxed code attempted to call blacklisted trait: $original_name", Error::BLACKLIST_TRAIT_ERROR, null, $original_name);
+                        $this->validationError("Sandboxed code attempted to call blacklisted trait: $original_name ($name)", Error::BLACKLIST_TRAIT_ERROR, null, $original_name);
                     }
                 } else {
-                    $this->validationError("Sandboxed code attempted to call invalid trait: $original_name", Error::VALID_TRAIT_ERROR, null, $original_name);
+                    $this->validationError("Sandboxed code attempted to call invalid trait: $original_name ($name)", Error::VALID_TRAIT_ERROR, null, $original_name);
                 }
             }
             return true;
@@ -6464,30 +6506,16 @@
                 return call_user_func_array($this->validation['type'], [$name, $this]);
             }
             if(!isset($this->definitions['classes'][$name])){
-                if (strpos($name, '\\') === 0) {
-                    $name = substr($name, 1);
-                    $original_name = substr($original_name, 1);
-                } else {
-                    foreach ($this->definitions['aliases'] as $aliasArr) {
-                        $alias = strtolower($aliasArr['alias']);
-                        $original = strtolower($aliasArr['original']);
-
-                        if (strpos($name, $alias) === 0) {
-                            $name = $original.substr($name, strlen($alias));
-                            $original_name = $aliasArr['original'].substr($original_name, strlen($alias));
-                        }
-                    }
-                }
                 if(count($this->whitelist['types'])){
                     if(!isset($this->whitelist['types'][$name])){
-                        $this->validationError("Sandboxed code attempted to call non-whitelisted type: $original_name", Error::WHITELIST_TYPE_ERROR, null, $original_name);
+                        $this->validationError("Sandboxed code attempted to call non-whitelisted type: $original_name ($name)", Error::WHITELIST_TYPE_ERROR, null, $original_name);
                     }
                 } else if(count($this->blacklist['types'])){
                     if(isset($this->blacklist['types'][$name])){
-                        $this->validationError("Sandboxed code attempted to call blacklisted type: $original_name", Error::BLACKLIST_TYPE_ERROR, null, $original_name);
+                        $this->validationError("Sandboxed code attempted to call blacklisted type: $original_name ($name)", Error::BLACKLIST_TYPE_ERROR, null, $original_name);
                     }
                 } else {
-                    $this->validationError("Sandboxed code attempted to call invalid type: $original_name", Error::VALID_TYPE_ERROR, null, $original_name);
+                    $this->validationError("Sandboxed code attempted to call invalid type: $original_name ($name)", Error::VALID_TYPE_ERROR, null, $original_name);
                 }
             }
             return true;

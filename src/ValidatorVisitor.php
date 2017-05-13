@@ -127,9 +127,10 @@
                 if(!$node->name){
                     $this->sandbox->validationError("Sandboxed code attempted to define unnamed class!", Error::DEFINE_CLASS_ERROR, $node, '');
                 }
-                if(!$this->sandbox->checkClass(($node->class instanceof Node\Name\FullyQualified ? '\\' : '') . $node->name)){
-                    $this->sandbox->validationError("Class failed custom validation!", Error::VALID_CLASS_ERROR, $node, $node->name);
-                }
+                // ** DIABLED BECAUSE THAT MUST BE IMPROVED
+                // if(!$this->sandbox->checkClass($node->name)){
+                //     $this->sandbox->validationError("Class failed custom validation!", Error::VALID_CLASS_ERROR, $node, $node->name);
+                // }
                 if($node->extends instanceof Node\Name){
                     if(!$this->sandbox->checkKeyword('extends')){
                         $this->sandbox->validationError("Keyword failed custom validation!", Error::VALID_KEYWORD_ERROR, $node, 'extends');
@@ -137,7 +138,7 @@
                     if(!$node->extends->toString()){
                         $this->sandbox->validationError("Sandboxed code attempted to extend unnamed class!", Error::DEFINE_CLASS_ERROR, $node, '');
                     }
-                    if(!$this->sandbox->checkClass(($class instanceof Node\Name\FullyQualified ? '\\' : '') . $node->extends->toString(), true)){
+                    if(!$this->sandbox->checkClass(($node->extends instanceof Node\Name\FullyQualified ? '\\' : '') . $node->extends->toString(), true)){
                         $this->sandbox->validationError("Class extension failed custom validation!", Error::VALID_CLASS_ERROR, $node, $node->extends->toString());
                     }
                 }
@@ -152,7 +153,7 @@
                         if(!$implement->toString()){
                             $this->sandbox->validationError("Sandboxed code attempted to implement unnamed interface!", Error::DEFINE_INTERFACE_ERROR, $node, '');
                         }
-                        if(!$this->sandbox->checkInterface($implement->toString())){
+                        if(!$this->sandbox->checkInterface(($implement instanceof Node\Name\FullyQualified ? '\\' : '') . $implement->toString())){
                             $this->sandbox->validationError("Interface failed custom validation!", Error::VALID_INTERFACE_ERROR, $node, $implement->toString());
                         }
                     }
@@ -187,6 +188,7 @@
                 if(!$this->sandbox->checkKeyword('use')){
                     $this->sandbox->validationError("Keyword failed custom validation!", Error::VALID_KEYWORD_ERROR, $node, 'use');
                 }
+                var_dump($node);
                 if(is_array($node->traits)){
                     foreach($node->traits as $trait){
                         /**
@@ -195,7 +197,7 @@
                         if(!$trait->toString()){
                             $this->sandbox->validationError("Sandboxed code attempted to use unnamed trait!", Error::DEFINE_TRAIT_ERROR, $node, '');
                         }
-                        if(!$this->sandbox->checkTrait($trait->toString())){
+                        if(!$this->sandbox->checkTrait(($trait instanceof Node\Name\FullyQualified ? '\\' : '') . $trait->toString())){
                             $this->sandbox->validationError("Trait failed custom validation!", Error::VALID_TRAIT_ERROR, $node, $trait->toString());
                         }
                     }
@@ -283,10 +285,17 @@
                 }
                 return $node;
             } else if($node instanceof Node\Param && $node->type instanceof Node\Name){
+                
+                $prefix = $node instanceof Node\Name\FullyQualified ? '\\' : '';
+
                 $class = $node->type->toString();
                 if($this->sandbox->isDefinedClass($class)){
                     $node->type = new Node\Name($this->sandbox->getDefinedClass($class));
                 }
+                if ($this->sandbox->isWhitelistedInterface($prefix.$class))
+                    $this->sandbox->checkInterface($prefix.$class);
+                else
+                    $this->sandbox->checkType($prefix.$class);
                 return $node;
             } else if($node instanceof Node\Expr\New_){
                 if(!$this->sandbox->allow_objects){
@@ -365,7 +374,7 @@
                     $args = [
                         new Node\Arg(new Node\Scalar\String_('shell_exec')),
                         new Node\Arg(new Node\Scalar\String_(implode('', $node->parts)))
-                    ];
+                    ]; 
                     return new Node\Expr\MethodCall(new Node\Expr\StaticCall(new Node\Name\FullyQualified("PHPSandbox\\PHPSandbox"), 'getSandbox', [new Node\Scalar\String_($this->sandbox->name)]), 'call_func', $args, $node->getAttributes());
                 }
                 if($this->sandbox->hasWhitelistedFuncs()){
