@@ -3825,7 +3825,7 @@
          *
          * @return  string|array           Returns the normalized class string or an array of normalized strings
          */
-        protected function normalizeClass($name){
+        public function normalizeClass($name){
             if(is_array($name)){
                 foreach($name as &$value){
                     $value = $this->normalizeClass($value);
@@ -3855,7 +3855,7 @@
          *
          * @return  string|array           Returns the normalized interface string or an array of normalized strings
          */
-        protected function normalizeInterface($name){
+        public function normalizeInterface($name){
             if(is_array($name)){
                 foreach($name as &$value){
                     $value = $this->normalizeInterface($value);
@@ -3884,7 +3884,7 @@
          *
          * @return  string|array           Returns the normalized trait string or an array of normalized strings
          */
-        protected function normalizeTrait($name){
+        public function normalizeTrait($name){
             if(is_array($name)){
                 foreach($name as &$value){
                     $value = $this->normalizeTrait($value);
@@ -4006,7 +4006,7 @@
          *
          * @return  string|array          Returns the normalized type string or an array of normalized strings
          */
-        protected function normalizeType($name){
+        public function normalizeType($name){
             if(is_array($name)){
                 foreach($name as &$value){
                     $value = $this->normalizeType($value);
