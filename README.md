@@ -9,8 +9,8 @@ It also utilizes [FunctionParser](https://github.com/jeremeamia/FunctionParser) 
 
 **Online API Documentation:** [https://docs.phpsandbox.org](https://docs.phpsandbox.org/)
 
-[![Build Status](https://travis-ci.org/Corveda/PHPSandbox.png?branch=master)](https://travis-ci.org/Corveda/PHPSandbox) [![Latest Stable Version](https://poser.pugx.org/corveda/php-sandbox/v/stable.png)](https://packagist.org/packages/corveda/php-sandbox) [![Total Downloads](https://poser.pugx.org/corveda/php-sandbox/downloads.png)](https://packagist.org/packages/corveda/php-sandbox) [![Latest Unstable Version](https://poser.pugx.org/corveda/php-sandbox/v/unstable.png)](https://packagist.org/packages/corveda/php-sandbox) [![License](https://poser.pugx.org/corveda/php-sandbox/license.png)](https://packagist.org/packages/corveda/php-sandbox)
-[![Dependency Status](https://www.versioneye.com/user/projects/56ba5cc22a29ed002d2af5e2/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56ba5cc22a29ed002d2af5e2)
+[![Build Status](https://travis-ci.org/IAJcraftDev/PHPSandbox.png?branch=master)](https://travis-ci.org/Corveda/PHPSandbox) [![Latest Stable Version](https://poser.pugx.org/axiles/php-sandbox/v/stable)](https://packagist.org/packages/corveda/php-sandbox) [![Total Downloads](https://poser.pugx.org/axiles/php-sandbox/downloads)](https://packagist.org/packages/corveda/php-sandbox) [![Latest Unstable Version](https://poser.pugx.org/axiles/php-sandbox/v/unstable)](https://packagist.org/packages/corveda/php-sandbox) [![License](https://poser.pugx.org/axiles/php-sandbox/license)](https://packagist.org/packages/corveda/php-sandbox)
+[![Dependency Status](https://www.versioneye.com/user/projects/59182eb5eb858e002d45d46d/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56ba5cc22a29ed002d2af5e2)
 
 ## Features:
 

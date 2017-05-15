@@ -139,7 +139,7 @@
                         $this->sandbox->validationError("Sandboxed code attempted to extend unnamed class!", Error::DEFINE_CLASS_ERROR, $node, '');
                     }
                     if(!$this->sandbox->checkClass(($node->extends instanceof Node\Name\FullyQualified ? '\\' : '') . $node->extends->toString(), true)){
-                        $this->sandbox->validationError("Class extension failed custom validation!", Error::VALID_CLASS_ERROR, $node, $node->extends->toString());
+                        $this->sandbox->validationError("Class extension failed custom validation!", Error::VALID_CLASS_ERROR, $node, ($node->extends instanceof Node\Name\FullyQualified ? '\\' : '') . $node->extends->toString());
                     }
                 }
                 if(is_array($node->implements)){
@@ -154,7 +154,7 @@
                             $this->sandbox->validationError("Sandboxed code attempted to implement unnamed interface!", Error::DEFINE_INTERFACE_ERROR, $node, '');
                         }
                         if(!$this->sandbox->checkInterface(($implement instanceof Node\Name\FullyQualified ? '\\' : '') . $implement->toString())){
-                            $this->sandbox->validationError("Interface failed custom validation!", Error::VALID_INTERFACE_ERROR, $node, $implement->toString());
+                            $this->sandbox->validationError("Interface failed custom validation!", Error::VALID_INTERFACE_ERROR, $node, ($implement instanceof Node\Name\FullyQualified ? '\\' : '') . $implement->toString());
                         }
                     }
                 }
@@ -198,7 +198,7 @@
                             $this->sandbox->validationError("Sandboxed code attempted to use unnamed trait!", Error::DEFINE_TRAIT_ERROR, $node, '');
                         }
                         if(!$this->sandbox->checkTrait(($trait instanceof Node\Name\FullyQualified ? '\\' : '') . $trait->toString())){
-                            $this->sandbox->validationError("Trait failed custom validation!", Error::VALID_TRAIT_ERROR, $node, $trait->toString());
+                            $this->sandbox->validationError("Trait failed custom validation!", Error::VALID_TRAIT_ERROR, $node, ($trait instanceof Node\Name\FullyQualified ? '\\' : '') . $trait->toString());
                         }
                     }
                 }
@@ -281,7 +281,7 @@
                  * @var Node\Name    $class
                  */
                 if(!$this->sandbox->checkClass(($class instanceof Node\Name\FullyQualified ? '\\' : '') . $class->toString())){
-                    $this->sandbox->validationError("Class constant failed custom validation!", Error::VALID_CLASS_ERROR, $node, $class->toString());
+                    $this->sandbox->validationError("Class constant failed custom validation!", Error::VALID_CLASS_ERROR, $node, ($class instanceof Node\Name\FullyQualified ? '\\' : '') . $class->toString());
                 }
                 return $node;
             } else if($node instanceof Node\Param && $node->type instanceof Node\Name){
